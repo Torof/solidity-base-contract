@@ -4,9 +4,16 @@ pragma solidity 0.8.19;
 
 import "../../interfaces/IERC721.sol";
 import "../../interfaces/IERC165.sol";
+import "../../interfaces/IERC721Metadata.sol";
 
-contract ERC721 is IERC721, IERC165{
+contract ERC721 is IERC721, IERC165, IERC721Metadata {
     function supportsInterface(bytes4 interfaceID) public view returns (bool){}
+
+    function name() external view returns (string memory _name){}
+
+    function symbol() external view returns (string memory _symbol){}
+
+    function tokenURI(uint256 _tokenId) external view returns (string memory){}
 
     function balanceOf(address _owner) public view returns (uint256){}
 
