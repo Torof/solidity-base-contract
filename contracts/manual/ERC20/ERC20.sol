@@ -12,7 +12,7 @@ contract ERC20 is IERC20, IERC20Metadata {
     mapping(address => mapping (address => uint)) _allowance;
     string private _name;
     string private _symbol;
-    uint256 public _decimals;
+    uint256 private _decimals;
     uint256 private _totalSupply;
 
     constructor(string memory name_, string memory symbol_,uint decimals_, uint _initialSupply) {
@@ -70,7 +70,7 @@ contract ERC20 is IERC20, IERC20Metadata {
         success = true;
     }
 
-    function _transfer(address _from, address _to, uint _amount) internal {
+    function _transfer(address _from, address _to, uint _amount) internal virtual {
         require(_from != address(0), "ERC20: transfer from address 0");
         require(_to != address(0), "ERC20: transfer to address 0");
 
@@ -101,6 +101,10 @@ contract ERC20 is IERC20, IERC20Metadata {
 
         emit Transfer(address(0), _account, _amount);
     }
+
+    function _beforeTokenTransfer() internal virtual {}
+
+    function _afterTokenTransfer() internal virtual {}
 
     ///TODO: add hook _beforeTokenTransfer + hook _afterTokenTransfer for child contracts' inheritance
     ///TODO: refactor with internal _transfer to use in transfer & transferFrom
