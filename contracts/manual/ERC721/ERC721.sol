@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.19;
+pragma solidity ^0.8.19;
 
 import "../../interfaces/IERC721.sol";
 import "../../interfaces/IERC165.sol";
@@ -18,10 +18,11 @@ contract ERC721 is IERC721, IERC165, IERC721Metadata {
     mapping(address => mapping(address => bool)) operatorApproval;
 
 
-    function supportsInterface(bytes4 interfaceID) public view returns (bool) {
+    function supportsInterface(bytes4 interfaceId) public view returns (bool) {
+        return
         interfaceId == type(IERC721).interfaceId ||
         interfaceId == type(IERC721Metadata).interfaceId ||
-        interfaceid == type(IERC165).interfaceId;
+        interfaceId == type(IERC165).interfaceId;
     }
 
     function name() external view returns (string memory) {
@@ -42,7 +43,7 @@ contract ERC721 is IERC721, IERC165, IERC721Metadata {
         return owner[_tokenId];
     }
 
-    function safeTransferFrom(address _from, address _to, uint256 _tokenId, bytes memory data) external payable {}
+    function safeTransferFrom(address _from, address _to, uint256 _tokenId, bytes memory data) public payable {}
 
     function safeTransferFrom(address _from, address _to, uint256 _tokenId) external payable {
         safeTransferFrom(_from, _to, _tokenId, "");
@@ -50,14 +51,21 @@ contract ERC721 is IERC721, IERC165, IERC721Metadata {
 
     function transferFrom(address _from, address _to, uint256 _tokenId) external payable {}
 
-    function approve(address _approved, uint256 _tokenId) external payable {}
+    ///TODO: enable operatorForAll to approve for 1
+    function approve(address _approved, uint256 _tokenId) external payable {
+        require(_approved != address(0), "ERC721: approve to address 0");
+        require(ownerOf(_tokenId) == msg.sender, "ERC721: not owner");
+        tokenApproval[_tokenId] = _approved;
+        emit Approval(msg.sender,_approved, _tokenId);
+    }
 
     function setApprovalForAll(address _operator, bool _approved) external {}
 
-    function getApproved(uint256 _tokenId) external view returns (address) {}
+    function getApproved(uint256 _tokenId) external view returns (address) {
+        return tokenApproval[_tokenId];
+    }
 
-    function isApprovedForAll(address _owner, address _operator) external view returns (bool) {}
+    function isApprovedForAll(address _owner, address _operator) external view returns (bool) {
+        return operatorApproval[_owner][ _operator];
+    }
 }
-
-
-0413384422
